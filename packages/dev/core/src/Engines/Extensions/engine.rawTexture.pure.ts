@@ -85,7 +85,11 @@ export function RegisterEnginesExtensionsEngineRawTexture(): void {
             invertY: boolean,
             samplingMode: number,
             compression: Nullable<string> = null,
-            textureType: number = Constants.TEXTURETYPE_UNSIGNED_BYTE
+            textureType: number = Constants.TEXTURETYPE_UNSIGNED_BYTE,
+            // Only createRawTexture2DArray takes the next three, in the same order as the other engines
+            _creationFlags: number = 0,
+            _mipLevelCount?: number,
+            useSRGBBuffer: boolean = false
         ): InternalTexture {
             const target = is3D ? this._gl.TEXTURE_3D : this._gl.TEXTURE_2D_ARRAY;
             const source = is3D ? InternalTextureSource.Raw3D : InternalTextureSource.Raw2DArray;
@@ -104,6 +108,8 @@ export function RegisterEnginesExtensionsEngineRawTexture(): void {
                 texture.is3D = true;
             } else {
                 texture.is2DArray = true;
+                // Read by updateRawTexture2DArray below, to pick the sRGB sized format
+                texture._useSRGBBuffer = this._getUseSRGBBuffer(useSRGBBuffer, !generateMipMaps);
             }
 
             if (!this._doNotHandleContextLost) {
@@ -149,7 +155,7 @@ export function RegisterEnginesExtensionsEngineRawTexture(): void {
             const target = is3D ? this._gl.TEXTURE_3D : this._gl.TEXTURE_2D_ARRAY;
             const internalType = this._getWebGLTextureType(textureType);
             const internalFormat = this._getInternalFormat(format);
-            const internalSizedFomat = this._getRGBABufferInternalSizedFormat(textureType, format);
+            const internalSizedFomat = this._getRGBABufferInternalSizedFormat(textureType, format, texture._useSRGBBuffer);
 
             this._bindTextureDirectly(target, texture, true);
             this._unpackFlipY(invertY === undefined ? true : invertY ? true : false);

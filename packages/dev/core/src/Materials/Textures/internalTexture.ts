@@ -480,7 +480,8 @@ export class InternalTexture extends TextureSampler {
                     this._compression,
                     this.type,
                     this._creationFlags,
-                    this.mipLevelCount
+                    this.mipLevelCount,
+                    this._useSRGBBuffer
                 );
                 proxy._swapAndDie(this, false);
 

@@ -2447,6 +2447,7 @@ export abstract class AbstractEngine {
      * @param textureType defines the compressed used (can be null)
      * @param creationFlags specific flags to use when creating the texture (Constants.TEXTURE_CREATIONFLAG_STORAGE for storage textures, for eg)
      * @param mipLevelCount defines the number of mip levels to allocate for the texture
+     * @param useSRGBBuffer defines if the texture must be loaded in a sRGB GPU buffer (if supported by the GPU). The texels are then decoded to linear by the sampler, before filtering.
      * @returns a new raw 2D array texture (stored in an InternalTexture)
      */
     public createRawTexture2DArray(
@@ -2461,7 +2462,8 @@ export abstract class AbstractEngine {
         compression?: Nullable<string>,
         textureType?: number,
         creationFlags?: number,
-        mipLevelCount?: number
+        mipLevelCount?: number,
+        useSRGBBuffer?: boolean
     ): InternalTexture {
         throw _WarnImport("engine.rawTexture");
     }

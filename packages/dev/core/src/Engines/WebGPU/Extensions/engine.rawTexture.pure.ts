@@ -414,7 +414,8 @@ export function RegisterEnginesWebGPUExtensionsEngineRawTexture(): void {
         compression: Nullable<string> = null,
         textureType: number = Constants.TEXTURETYPE_UNSIGNED_BYTE,
         creationFlags: number = 0,
-        mipLevelCount?: number
+        mipLevelCount?: number,
+        useSRGBBuffer: boolean = false
     ): InternalTexture {
         const source = InternalTextureSource.Raw2DArray;
         const texture = new InternalTexture(this, source);
@@ -431,6 +432,8 @@ export function RegisterEnginesWebGPUExtensionsEngineRawTexture(): void {
         texture.samplingMode = samplingMode;
         texture.is2DArray = true;
         texture._creationFlags = creationFlags;
+        // The GPU format is chosen once, when the GPU texture is created: the flag must be set before
+        texture._useSRGBBuffer = this._getUseSRGBBuffer(useSRGBBuffer, !generateMipMaps);
 
         if (!this._doNotHandleContextLost) {
             texture._bufferView = data;

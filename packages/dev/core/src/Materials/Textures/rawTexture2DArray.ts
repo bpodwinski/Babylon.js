@@ -31,6 +31,7 @@ export class RawTexture2DArray extends Texture {
      * @param textureType defines the texture Type (Engine.TEXTURETYPE_UNSIGNED_BYTE, Engine.TEXTURETYPE_FLOAT...)
      * @param creationFlags specific flags to use when creating the texture (Constants.TEXTURE_CREATIONFLAG_STORAGE for storage textures, for eg)
      * @param mipLevelCount defines the number of mip levels to allocate for the texture
+     * @param useSRGBBuffer defines if the texture must be loaded in a sRGB GPU buffer (if supported by the GPU). The texels are then decoded to linear by the sampler, before filtering.
      */
     constructor(
         data: Nullable<ArrayBufferView>,
@@ -45,13 +46,28 @@ export class RawTexture2DArray extends Texture {
         samplingMode: number = Texture.TRILINEAR_SAMPLINGMODE,
         textureType = Constants.TEXTURETYPE_UNSIGNED_BYTE,
         creationFlags?: number,
-        mipLevelCount?: number
+        mipLevelCount?: number,
+        useSRGBBuffer?: boolean
     ) {
         super(null, scene, !generateMipMaps, invertY);
 
         this._texture = scene
             .getEngine()
-            .createRawTexture2DArray(data, width, height, depth, format, generateMipMaps, invertY, samplingMode, null, textureType, creationFlags ?? 0, mipLevelCount);
+            .createRawTexture2DArray(
+                data,
+                width,
+                height,
+                depth,
+                format,
+                generateMipMaps,
+                invertY,
+                samplingMode,
+                null,
+                textureType,
+                creationFlags ?? 0,
+                mipLevelCount,
+                useSRGBBuffer ?? false
+            );
 
         this._depth = depth;
         this.is2DArray = true;
